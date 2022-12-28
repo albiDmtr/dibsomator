@@ -1,0 +1,46 @@
+{
+    "items": {
+        "carpet": {
+            "keywords": [
+                "carpet"
+            ],
+            "max_price": 30,
+            "dibs_to_unknown_price": true,
+            "notify_only": false,
+            "active": true
+        },
+        "shelf": {
+            "keywords": [
+                "shelf",
+                "bookshelf"
+            ],
+            "max_price": 60,
+            "dibs_to_unknown_price": true,
+            "notify_only": "@albi_dmtr",
+            "active": true
+        },
+        "monitor": {
+            "keywords": [
+                "monitor",
+                "tv",
+                "television"
+            ],
+            "max_price": 100,
+            "dibs_to_unknown_price": true,
+            "notify_only": false,
+            "active": true
+        },
+        "desk": {
+            "keywords": [
+                "desk",
+                "office table"
+            ],
+            "max_price": 100,
+            "dibs_to_unknown_price": true,
+            "notify_only": false,
+            "active": true
+        }
+    },
+    "send_notification_to": "@albi_dmtr",
+    "group_tag": "@dibsbotsandbox"
+}

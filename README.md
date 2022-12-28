@@ -1,2 +1,5 @@
-# dibsbot
+## Dibsbot
  A telegram bot for buying items in the Otaniemi Buy and Sell group
+
+# Possible features:
+    - Use GPT3 to check if what's being sold is what we think it is
