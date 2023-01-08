@@ -4,6 +4,7 @@ from random import uniform
 import json
 from dotenv import load_dotenv
 import os
+import time
 
 # enable logging
 import logging
@@ -23,6 +24,7 @@ API_HASH = os.environ["TELETHON_HASH"]
 
 min_wait_s = 2
 max_wait_s = 15
+mute_period_s = 90
 client = TelegramClient('dibsomator', API_ID, API_HASH)
 
 # turning blacklisted and keywords to lower-case
@@ -52,8 +54,7 @@ async def new_message_handler(event):
                         price = determine_price(cleaned_text)
                         if (price and price <= item["max_price"]) or (not price and item["dibs_to_unknown_price"]):
                             if not item["notify_only"]:
-                                await dib_item(keyword, event)
-                                deactivate(item)
+                                await dib_item(item, keyword, event)
                             else:
                                 await notify_user(item["notify_only"], keyword, event)
 
@@ -114,30 +115,29 @@ def determine_price(cleaned_text):
     
     return price
 
-async def dib_item(keyword, message):
+last_dib = 0
+async def dib_item(item, keyword, message):
+    global last_dib
+
     seller = "@" + message.sender.username
 
     await asyncio.sleep(uniform(min_wait_s, max_wait_s))
-    # notify the user
-    await client.send_message(send_notification_to, f"""🛒✅ You dibbed on a(n) {keyword}! ✅🛒
+    if time.time() - last_dib >= mute_period_s:
+        # notify the user
+        await client.send_message(send_notification_to, f"""🛒✅ You dibbed on a(n) {keyword}! ✅🛒
 The seller is {seller}. Take a look at what you bought in the {group_tag} group.""")
 
+        # dib the item in the group
+        await message.reply(f'dibs {keyword}')
+        last_dib = int(time.time())
 
-    # dib the item in the group
-    await message.reply(f'dibs {keyword}')
-
-    # write to the seller (currently not)
-    #await asyncio.sleep(uniform(min_wait_s*4, max_wait_s*4))
-    #await client.send_message(seller, f"Hi! I'm interested in the {keyword} you want to sell.")
-
-    print(f"Dibbed {keyword}.")
-
-# TODO: biztonsági dolgok legyenek benne, hogy ne csináljon hülyeséget
-# mit tud elbaszni?
-# hülyeséget ír a csopiba
-
-# Hogy lesz használva?
-# EC2
+        # write to the seller (currently not)
+        #await asyncio.sleep(uniform(min_wait_s*4, max_wait_s*4))
+        #await client.send_message(seller, f"Hi! I'm interested in the {keyword} you want to sell.")
+        deactivate(item)
+        print(f"Dibbed {keyword}.")
+    else:
+        notify_user(send_notification_to, keyword, message)
 
 async def notify_user(user, keyword, message):
     seller = "@" + message.sender.username
@@ -148,4 +148,5 @@ Take a look at the {group_tag} group to see what {seller} sells.""")
     print(f"Notified user about {keyword}.")
 
 client.start()
+print("Dibsbot is active..")
 client.run_until_disconnected()
