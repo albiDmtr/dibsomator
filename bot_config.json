@@ -6,8 +6,8 @@
             ],
             "max_price": 30,
             "dibs_to_unknown_price": true,
-            "notify_only": false,
-            "active": false
+            "notify_only": "@albi_dmtr",
+            "active": true
         },
         "shelf": {
             "keywords": [

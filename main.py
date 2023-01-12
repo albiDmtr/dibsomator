@@ -8,8 +8,20 @@ import time
 
 # enable logging
 import logging
-logging.basicConfig(format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
-                    level=logging.WARNING)
+import sys
+
+file_handler = logging.FileHandler(filename='log.txt')
+stdout_handler = logging.StreamHandler(stream=sys.stdout)
+handlers = [file_handler, stdout_handler]
+
+logging.basicConfig(
+    level=logging.INFO, 
+    format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
+    handlers=handlers
+)
+
+#logger = logging.getLogger('LOG')
+
 
 with open('./bot_config.json', 'r') as openfile:
     config_json = json.load(openfile)
@@ -62,7 +74,7 @@ async def new_message_handler(event):
                             break
             if already_found_match:
                 break
-    print("got message")
+    logging.info("Got message.")
 
 def not_part_of_word(keyword, text):
     pre_index = text.index(keyword)-1
@@ -119,7 +131,7 @@ last_dib = 0
 async def dib_item(item, keyword, message):
     global last_dib
 
-    seller = "@" + message.sender.username
+    seller = message.sender.first_name + ' ' + message.sender.last_name
 
     await asyncio.sleep(uniform(min_wait_s, max_wait_s))
     if time.time() - last_dib >= mute_period_s:
@@ -135,18 +147,18 @@ The seller is {seller}. Take a look at what you bought in the {group_tag} group.
         #await asyncio.sleep(uniform(min_wait_s*4, max_wait_s*4))
         #await client.send_message(seller, f"Hi! I'm interested in the {keyword} you want to sell.")
         deactivate(item)
-        print(f"Dibbed {keyword}.")
+        logging.info(f"Dibbed {keyword}.")
     else:
         notify_user(send_notification_to, keyword, message)
 
 async def notify_user(user, keyword, message):
-    seller = "@" + message.sender.username
+    seller = message.sender.first_name + ' ' + message.sender.last_name
 
     await client.send_message(user, f"""🛒❗There's a(n) {keyword} on sale. ❗🛒
 Take a look at the {group_tag} group to see what {seller} sells.""")
 
-    print(f"Notified user about {keyword}.")
+    logging.info(f"Notified user about {keyword}.")
 
 client.start()
-print("Dibsbot is active..")
+logging.info("Dibsbot is active..")
 client.run_until_disconnected()
