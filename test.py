@@ -34,6 +34,7 @@ for value in items.values():
 
 # listening for new messages
 @client.on(events.NewMessage(chats=group_tag))
+@client.on(events.MessageEdited(chats=group_tag))
 async def new_message_handler(event):
     
     a = event.sender.username

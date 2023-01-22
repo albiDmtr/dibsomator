@@ -5,7 +5,6 @@ import json
 from dotenv import load_dotenv
 import os
 import time
-
 # enable logging
 import logging
 import sys
@@ -13,15 +12,11 @@ import sys
 file_handler = logging.FileHandler(filename='log.txt')
 stdout_handler = logging.StreamHandler(stream=sys.stdout)
 handlers = [file_handler, stdout_handler]
-
 logging.basicConfig(
     level=logging.INFO, 
     format='[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s',
     handlers=handlers
 )
-
-#logger = logging.getLogger('LOG')
-
 
 with open('./bot_config.json', 'r') as openfile:
     config_json = json.load(openfile)
@@ -46,6 +41,7 @@ for value in items.values():
 
 # listening for new messages
 @client.on(events.NewMessage(chats=group_tag))
+@client.on(events.MessageEdited(chats=group_tag))
 async def new_message_handler(event):
     if event.photo:
         has_photo = True
@@ -127,17 +123,20 @@ def determine_price(cleaned_text):
     
     return price
 
+def get_seller_name(message):
+    seller_fname = message.sender.first_name if message.sender.first_name else ''
+    seller_lname = message.sender.last_name if message.sender.last_name else ''
+    return seller_fname + ' ' + seller_lname
+
 last_dib = 0
 async def dib_item(item, keyword, message):
     global last_dib
-
-    seller = message.sender.first_name + ' ' + message.sender.last_name
 
     await asyncio.sleep(uniform(min_wait_s, max_wait_s))
     if time.time() - last_dib >= mute_period_s:
         # notify the user
         await client.send_message(send_notification_to, f"""🛒✅ You dibbed on a(n) {keyword}! ✅🛒
-The seller is {seller}. Take a look at what you bought in the {group_tag} group.""")
+The seller is {get_seller_name(message)}. Take a look at what you bought in the {group_tag} group.""")
 
         # dib the item in the group
         await message.reply(f'dibs {keyword}')
@@ -152,10 +151,9 @@ The seller is {seller}. Take a look at what you bought in the {group_tag} group.
         notify_user(send_notification_to, keyword, message)
 
 async def notify_user(user, keyword, message):
-    seller = message.sender.first_name + ' ' + message.sender.last_name
 
     await client.send_message(user, f"""🛒❗There's a(n) {keyword} on sale. ❗🛒
-Take a look at the {group_tag} group to see what {seller} sells.""")
+Take a look at the {group_tag} group to see what {get_seller_name(message)} sells.""")
 
     logging.info(f"Notified user about {keyword}.")
 
