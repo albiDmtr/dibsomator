@@ -21,6 +21,7 @@ logging.basicConfig(
 with open('./bot_config.json', 'r') as openfile:
     config_json = json.load(openfile)
 items = config_json["items"]
+notify_about_free =  config_json["notify_about_free"]
 send_notification_to = config_json["send_notification_to"]
 group_tag = config_json["group_tag"]
 blacklisted_words = ["looking for","dibs"]
@@ -50,6 +51,11 @@ async def new_message_handler(event):
 
     cleaned_text = event.raw_text.lower().replace('\n', ' ')
 
+    # check if giveaway item
+    if notify_about_free and has_photo and free_item(cleaned_text):
+        await notify_user(send_notification_to, "free item", event)
+        return
+
     # if has photo and doesn't contain blacklisted words
     if has_photo and all((elem not in cleaned_text) for elem in blacklisted_words):
         # look for matching keywords
@@ -71,6 +77,19 @@ async def new_message_handler(event):
             if already_found_match:
                 break
     logging.info("Got message.")
+
+# function to check if message is about a giveaway item
+def free_item(cleaned_text):
+    whitelist = ["for free", "giveaway", "giving away", "free to take"]
+    blacklist = ["free delivery", "room", "free to", "+free", "price"]
+    if any((elem in cleaned_text) for elem in whitelist):
+        return True
+    if "free" in cleaned_text and all((elem not in cleaned_text) for elem in blacklist) and not determine_price(cleaned_text):
+        return True
+    
+    return False
+
+
 
 def not_part_of_word(keyword, text):
     pre_index = text.index(keyword)-1
@@ -137,6 +156,7 @@ async def dib_item(item, keyword, message):
         # notify the user
         await client.send_message(send_notification_to, f"""🛒✅ You dibbed on a(n) {keyword}! ✅🛒
 The seller is {get_seller_name(message)}. Take a look at what you bought in the {group_tag} group.""")
+        await client.forward_messages(send_notification_to, message.message)
 
         # dib the item in the group
         await message.reply(f'dibs {keyword}')
@@ -154,6 +174,7 @@ async def notify_user(user, keyword, message):
 
     await client.send_message(user, f"""🛒❗There's a(n) {keyword} on sale. ❗🛒
 Take a look at the {group_tag} group to see what {get_seller_name(message)} sells.""")
+    await client.forward_messages(user, message.message)
 
     logging.info(f"Notified user about {keyword}.")
 

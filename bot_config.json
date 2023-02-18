@@ -41,6 +41,7 @@
             "active": false
         }
     },
+    "notify_about_free": true,
     "send_notification_to": "@albi_dmtr",
     "group_tag": "@dibsbotsandbox"
 }
