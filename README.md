@@ -1,5 +1,5 @@
 <img src="https://raw.githubusercontent.com/albiDmtr/dibsomator/main/logo.ico"  width="84" height="84">
-###  Dibsbot
+###  Dibsomator
 ##### A Telegram bot for automating dibbing on items in the Otaniemi Buy and Sell group
 
 ## Setup:
@@ -15,7 +15,7 @@
     TELETHON_ID = "<your app ID goes here>"
     TELETHON_HASH = "<your hash goes here>"
 ```
-**5.** From the account you run dibsbot from, join the @aaltomarketplace group
+**5.** From the account you run dibsomator from, join the @aaltomarketplace group
 > If you wish to recive notifications to a different account than what the bot is run on, <strong>make sure to send a message to the account the bot uses</strong>, otherwise Telegram will not let it send messages to you
 
 **6.** Specify the bot what to look for in the `bot_config.json` file

@@ -178,5 +178,5 @@ Take a look at the {group_tag} group to see what {get_seller_name(message)} sell
     logging.info(f"Notified user about {keyword}.")
 
 client.start()
-logging.info("Dibsbot is active..")
+logging.info("Dibsomator is active..")
 client.run_until_disconnected()
