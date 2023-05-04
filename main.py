@@ -5,6 +5,7 @@ import json
 from dotenv import load_dotenv
 import os
 import time
+
 # enable logging
 import logging
 import sys
@@ -88,8 +89,6 @@ def free_item(cleaned_text):
         return True
     
     return False
-
-
 
 def not_part_of_word(keyword, text):
     pre_index = text.index(keyword)-1

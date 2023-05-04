@@ -6,7 +6,7 @@
             ],
             "max_price": 30,
             "dibs_to_unknown_price": true,
-            "notify_only": "@albi_dmtr",
+            "notify_only": "@yourtaghere",
             "active": true
         },
         "shelf": {
@@ -16,7 +16,7 @@
             ],
             "max_price": 60,
             "dibs_to_unknown_price": true,
-            "notify_only": "@albi_dmtr",
+            "notify_only": "@yourtaghere",
             "active": true
         },
         "monitor": {
@@ -42,6 +42,6 @@
         }
     },
     "notify_about_free": true,
-    "send_notification_to": "@albi_dmtr",
-    "group_tag": "@dibsbotsandbox"
+    "send_notification_to": "@yourtaghere",
+    "group_tag": "@aaltomarketplace"
 }
