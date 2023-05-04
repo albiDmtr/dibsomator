@@ -1,6 +1,8 @@
 <img src="https://raw.githubusercontent.com/albiDmtr/dibsomator/main/logo.ico"  width="84" height="84">
+
 ###  Dibsomator
 ##### A Telegram bot for automating dibbing on items in the Otaniemi Buy and Sell group
+------------
 
 ## Setup:
 **1.**  Setup a virtual cloud instance if you wish the bot to run over the clock
